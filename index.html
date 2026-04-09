@@ -1,95 +1,247 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wisselgeld Calculator</title>
-<link rel="manifest" href="manifest.json">
-<style>
-body{margin:0;font-family:Arial;background:#121212;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh}
-.container{width:95%;max-width:420px}
-h1{text-align:center;margin-bottom:20px}
-input{width:100%;padding:18px;margin-bottom:15px;font-size:22px;border:none;border-radius:12px;background:#1e1e1e;color:#fff}
-.option{display:flex;gap:10px;margin-bottom:10px}
-.quick-buttons{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap}
-button{flex:1;padding:18px;font-size:20px;border:none;border-radius:12px;background:#2e2e2e;color:#fff;cursor:pointer}
-.result{margin-top:20px;background:#1e1e1e;padding:20px;border-radius:12px;font-size:20px;opacity:0;transform:translateY(10px);transition:.25s}
-.result.show{opacity:1;transform:translateY(0)}
-.result.change-mode{border:2px solid #00ff9c}
-.result.tip-mode{border:2px solid #ffd166;background:#2a2412}
-.highlight{font-size:28px;margin-bottom:10px;color:#00ff9c}
-.tip{color:#ffd166;font-size:22px;margin-top:10px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wisselgeld App</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        :root {
+            --bg: #121212;
+            --card: #1e1e1e;
+            --accent: #00ff9c;
+            --tip-color: #ffd166;
+            --btn: #2e2e2e;
+            --text: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 20px 0;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 360px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #888;
+            padding-left: 4px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            background: var(--card);
+            color: #fff;
+            box-sizing: border-box;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--accent);
+        }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .quick-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            background: var(--btn);
+            color: #fff;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            background: #444;
+        }
+
+        .btn-calc {
+            width: 100%;
+            background: var(--accent);
+            color: #000;
+            font-size: 18px;
+            margin-top: 5px;
+        }
+
+        .btn-calc:active {
+            background: #00cc7d;
+        }
+
+        .result {
+            margin-top: 20px;
+            background: var(--card);
+            padding: 15px;
+            border-radius: 12px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result.show { display: block; }
+        .result.change-mode { border: 2px solid var(--accent); }
+        .result.tip-mode { border: 2px solid var(--tip-color); background: #2a2412; }
+
+        .highlight { font-size: 24px; font-weight: bold; color: var(--accent); margin-bottom: 5px; }
+        .denoms { font-size: 15px; line-height: 1.4; color: #ccc; }
+        .tip-text { color: var(--tip-color); font-weight: bold; margin-top: 8px; font-size: 18px; }
+    </style>
 </head>
 <body>
+
 <div class="container">
-<h1>Wisselgeld</h1>
-<input type="number" step="0.01" id="bill" placeholder="Rekening (€)">
-<input type="number" step="0.01" id="paid" placeholder="Betaald (€)">
-<input type="number" step="0.01" id="target" placeholder="Gast zegt: maak er (€...) van">
-<div class="option">
-<input type="checkbox" id="tipMode"><label>Fooi (geen wisselgeld)</label>
+    <h1>Wisselgeld</h1>
+    
+    <div class="input-group">
+        <label>Te betalen bedrag (€)</label>
+        <input type="number" step="0.01" id="bill" placeholder="0,00" inputmode="decimal">
+    </div>
+
+    <div class="input-group">
+        <label>Betaald door gast (€)</label>
+        <input type="number" step="0.01" id="paid" placeholder="0,00" inputmode="decimal">
+    </div>
+
+    <div class="quick-buttons" id="quickButtons"></div>
+
+    <div class="input-group">
+        <label>Afronden naar? (Optioneel)</label>
+        <input type="number" step="0.01" id="target" placeholder="bv. 50,00" inputmode="decimal">
+    </div>
+
+    <label class="checkbox-container">
+        <input type="checkbox" id="tipMode"> Volledig fooi (geen wisselgeld)
+    </label>
+
+    <button class="btn-calc" onclick="calculateChange()">Bereken Wisselgeld</button>
+
+    <div class="result" id="result"></div>
 </div>
-<div class="quick-buttons" id="quickButtons"></div>
-<button onclick="calculateChange()">Bereken</button>
-<div class="result" id="result"></div>
-</div>
+
 <script>
-const quickValues=[10,20,50,100,200];
-function initButtons(){
-const c=document.getElementById('quickButtons');
-quickValues.forEach(v=>{
-const b=document.createElement('button');
-b.innerText='€'+v;
-b.onclick=()=>setPaid(v);
-c.appendChild(b);
-});}
-function setPaid(a){document.getElementById('paid').value=a.toFixed(2);calculateChange();}
-function round5(c){return Math.round(c/5)*5;}
-function calculateChange(){
-const bill=parseFloat(document.getElementById('bill').value);
-const paid=parseFloat(document.getElementById('paid').value);
-const target=parseFloat(document.getElementById('target').value);
-const tipMode=document.getElementById('tipMode').checked;
-const result=document.getElementById('result');
-result.classList.remove('tip-mode','change-mode');
-if(isNaN(bill)||isNaN(paid)){result.classList.remove('show');return;}
-let changeCents=0;
-let tipCents=0;
-let useTarget=!isNaN(target);
-if(useTarget){tipCents=Math.round((target-bill)*100);changeCents=Math.round((paid-target)*100);}else{changeCents=Math.round((paid-bill)*100);}
-if(changeCents<0){result.innerHTML='<div class="highlight">Te weinig betaald</div>';result.classList.add('show');return;}
-if(tipMode){const tip=(paid-bill).toFixed(2);result.innerHTML='<div class="highlight">Geen wisselgeld</div><div class="tip">Fooi: €'+tip+'</div>';result.classList.add('show','tip-mode');return;}
-let change=round5(changeCents);
-const den=[2000,1000,500,200,100,50,20,10,5];
-const lab=['€20','€10','€5','€2','€1','50c','20c','10c','5c'];
-let out=[];
-for(let i=0;i<den.length;i++){let count=Math.floor(change/den[i]);if(count>0){out.push(count+'x '+lab[i]);change-=count*den[i];}}
-const changeEuro=(changeCents/100).toFixed(2);
-let html='<div class="highlight">€'+changeEuro+'</div>';
-html+='<div>Pak: '+out.join(', ')+'</div>';
-if(useTarget){html+='<div class="tip">Fooi: €'+(tipCents/100).toFixed(2)+'</div>';}
-result.innerHTML=html;
-result.classList.add('show','change-mode');
-}
+    const quickValues = [10, 20, 50, 100, 200];
+    const qb = document.getElementById('quickButtons');
+    
+    quickValues.forEach(v => {
+        const b = document.createElement('button');
+        b.innerText = '€' + v;
+        b.onclick = () => {
+            document.getElementById('paid').value = v.toFixed(2);
+            calculateChange();
+        };
+        qb.appendChild(b);
+    });
 
-// TESTS
-function runTests(){
-console.log('Test 1');
-let bill=76.35,paid=100,target=82.50;
-console.log('Change should be 17.50:',(paid-target).toFixed(2));
-console.log('Tip should be 6.15:',(target-bill).toFixed(2));
+    function round5(cents) { return Math.round(cents / 5) * 5; }
 
-console.log('Test 2 (no target)');
-console.log('Change 100-50=50:',(100-50).toFixed(2));
+    function calculateChange() {
+        const bill = parseFloat(document.getElementById('bill').value) || 0;
+        const paid = parseFloat(document.getElementById('paid').value) || 0;
+        const target = parseFloat(document.getElementById('target').value);
+        const isTipOnly = document.getElementById('tipMode').checked;
+        const resultDiv = document.getElementById('result');
 
-console.log('Test 3 (exact payment)');
-console.log('Change 0:',(50-50).toFixed(2));
-}
-runTests();
+        if (bill <= 0 || paid <= 0) return;
 
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
-initButtons();
+        resultDiv.classList.remove('tip-mode', 'change-mode', 'show');
+        
+        let changeCents = 0;
+        let tipCents = 0;
+        let useTarget = !isNaN(target);
+
+        if (useTarget) {
+            tipCents = Math.round((target - bill) * 100);
+            changeCents = Math.round((paid - target) * 100);
+        } else {
+            changeCents = Math.round((paid - bill) * 100);
+        }
+
+        if (changeCents < 0 && !isTipOnly) {
+            resultDiv.innerHTML = '<div class="highlight" style="color:#ff4d4d">Te weinig betaald!</div>';
+            resultDiv.classList.add('show');
+            return;
+        }
+
+        if (isTipOnly) {
+            const totalTip = (paid - bill).toFixed(2);
+            resultDiv.innerHTML = `<div class="highlight">Geen wisselgeld</div><div class="tip-text">Fooi: €${totalTip}</div>`;
+            resultDiv.classList.add('show', 'tip-mode');
+            return;
+        }
+
+        let roundedChange = round5(changeCents);
+        const denoms = [2000, 1000, 500, 200, 100, 50, 20, 10, 5];
+        const labels = ['€20', '€10', '€5', '€2', '€1', '50c', '20c', '10c', '5c'];
+        let stack = [];
+
+        let tempChange = roundedChange;
+        for (let i = 0; i < denoms.length; i++) {
+            let count = Math.floor(tempChange / denoms[i]);
+            if (count > 0) {
+                stack.push(`<strong>${count}x</strong> ${labels[i]}`);
+                tempChange -= count * denoms[i];
+            }
+        }
+
+        let html = `<div class="highlight">Terug: €${(roundedChange / 100).toFixed(2)}</div>`;
+        html += `<div class="denoms">${stack.join('<br>')}</div>`;
+        if (useTarget) html += `<div class="tip-text">Fooi: €${(tipCents / 100).toFixed(2)}</div>`;
+
+        resultDiv.innerHTML = html;
+        resultDiv.classList.add('show', 'change-mode');
+    }
+
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
 </script>
+
 </body>
 </html>
