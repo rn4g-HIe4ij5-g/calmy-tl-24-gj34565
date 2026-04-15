@@ -10,73 +10,102 @@
             --bg: #0c0c0c;
             --input-bg: #1e1e1e;
             --accent: #00ff9c;
-            --btn-gray: #2e2e2e;
+            --btn-gray: #262626;
+            --btn-hover: #333333;
             --text: #ffffff;
             --label: #888;
         }
 
         body {
-            margin: 0; font-family: sans-serif;
+            margin: 0; font-family: -apple-system, system-ui, sans-serif;
             background: var(--bg); color: var(--text);
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh; overflow-x: hidden;
         }
 
-        .container { width: 90%; max-width: 400px; }
+        .container { width: 90%; max-width: 400px; padding: 10px; }
         #screen-calc { display: none; }
         
-        h1 { text-align: center; color: var(--accent); font-size: 22px; font-weight: 800; margin-bottom: 15px; }
-        .label { font-size: 11px; color: var(--label); margin-bottom: 5px; display: block; text-transform: uppercase; }
+        h1 { text-align: center; color: var(--accent); font-size: 22px; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .label { font-size: 11px; color: var(--label); margin-bottom: 6px; display: block; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
 
-        /* HOME SCREEN */
+        /* --- HOME SCREEN --- */
         .table-display {
-            background: var(--input-bg); padding: 15px; border-radius: 12px;
-            text-align: center; font-size: 28px; font-weight: 800;
-            color: var(--accent); margin-bottom: 15px; min-height: 35px;
+            background: var(--input-bg); padding: 20px; border-radius: 16px;
+            text-align: center; font-size: 32px; font-weight: 800;
+            color: var(--accent); margin-bottom: 20px; min-height: 40px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
 
-        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .numpad button { padding: 20px; font-size: 22px; background: var(--btn-gray); border-radius: 12px; color: white; }
-        .btn-confirm { grid-column: span 3; background: var(--accent) !important; color: black !important; font-weight: bold; margin-top: 5px; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .numpad button { padding: 22px; font-size: 24px; background: var(--btn-gray); border-radius: 16px; color: white; font-weight: bold; }
+        .btn-confirm { grid-column: span 3; background: var(--accent) !important; color: black !important; margin-top: 10px; text-transform: uppercase; }
 
-        .active-list-title { margin-top: 25px; border-top: 1px solid #222; padding-top: 15px; }
-        .active-tables-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+        .active-list-title { margin-top: 30px; border-top: 1px solid #222; padding-top: 20px; }
+        .active-tables-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; }
         .table-card {
-            background: var(--input-bg); border: 1px solid var(--accent);
-            padding: 12px; border-radius: 10px; text-align: left; cursor: pointer;
+            background: var(--input-bg); border: 1px solid #333;
+            padding: 15px; border-radius: 14px; text-align: left; transition: border 0.2s;
         }
-        .table-card b { color: var(--accent); font-size: 16px; }
-        .table-card span { display: block; font-size: 12px; color: #ccc; margin-top: 4px; }
+        .table-card:active { border-color: var(--accent); }
+        .table-card b { color: var(--accent); font-size: 17px; display: block; }
+        .table-card span { font-size: 13px; color: #aaa; margin-top: 5px; display: block; }
 
-        /* CALC SCREEN */
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .table-badge { background: var(--accent); color: black; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 13px; }
-        .btn-back { background: transparent; color: #ff4d4d; font-size: 13px; font-weight: bold; }
+        /* --- CALC SCREEN --- */
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .table-badge { background: var(--accent); color: black; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 13px; text-transform: uppercase; }
+        .btn-back { background: transparent; color: #ff4d4d; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
 
         input {
-            width: 100%; background: var(--input-bg); border: none; border-radius: 12px;
-            padding: 16px; color: #fff; font-size: 18px; outline: none; box-sizing: border-box;
+            width: 100%; background: var(--input-bg); border: 1px solid #333; border-radius: 14px;
+            padding: 18px; color: #fff; font-size: 18px; outline: none; box-sizing: border-box;
+            transition: border 0.2s;
+        }
+        input:focus { border-color: var(--accent); }
+
+        .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        .btn-plus { background: var(--accent); color: #000; border-radius: 14px; width: 65px; font-size: 28px; font-weight: bold; }
+
+        .saved-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .chip { background: var(--btn-gray); padding: 10px 14px; border-radius: 10px; font-size: 13px; border: 1px solid #444; font-weight: 600; }
+
+        /* Stylized Quick Buttons */
+        .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .quick-grid button { 
+            background: var(--btn-gray); 
+            color: #fff; 
+            padding: 15px; 
+            font-size: 16px; 
+            font-weight: 700; 
+            border-radius: 12px; 
+            border: 1px solid #3d3d3d;
         }
 
-        .input-with-action { display: flex; gap: 8px; margin-bottom: 12px; }
-        .btn-plus { background: var(--accent); color: #000; border-radius: 12px; width: 55px; font-size: 22px; font-weight: bold; }
+        .btn-main { 
+            background: var(--accent); 
+            color: #000; 
+            width: 100%; 
+            padding: 20px; 
+            font-weight: 800; 
+            border-radius: 16px; 
+            font-size: 18px; 
+            margin-top: 10px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-        .saved-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-        .chip { background: var(--btn-gray); padding: 6px 10px; border-radius: 8px; font-size: 12px; border: 1px solid #444; }
-
-        .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
-        .btn-main { background: var(--accent); color: #000; width: 100%; padding: 18px; font-weight: 700; border-radius: 12px; font-size: 16px; }
-
-        .result { margin-top: 20px; background: var(--input-bg); padding: 15px; border-radius: 12px; display: none; border-left: 5px solid var(--accent); }
-        .result.show { display: block; }
+        /* Results & Coins */
+        .result { margin-top: 25px; background: var(--input-bg); padding: 20px; border-radius: 16px; display: none; border-left: 6px solid var(--accent); }
+        .result.show { display: block; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } }
         
-        .coin-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
-        .coin-item { background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 15px; font-size: 12px; display: flex; align-items: center; border: 1px solid #333; }
-        .dot { width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+        .coin-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        .coin-item { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; border: 1px solid #333; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
         .gold { background: #ffd700; } .silver { background: #c0c0c0; } .bronze { background: #cd7f32; }
 
-        button { cursor: pointer; border: none; transition: transform 0.1s; }
-        button:active { transform: scale(0.95); }
+        button { cursor: pointer; border: none; transition: transform 0.1s, background 0.2s; }
+        button:active { transform: scale(0.94); filter: brightness(1.2); }
     </style>
 </head>
 <body>
@@ -97,7 +126,7 @@
         <button onclick="pressTable('9')">9</button>
         <button onclick="pressTable('clear')" style="color:#ff4d4d">C</button>
         <button onclick="pressTable('0')">0</button>
-        <button onclick="goToCalc()" class="btn-confirm">NIEUWE TAFEL</button>
+        <button onclick="goToCalc()" class="btn-confirm">Verder</button>
     </div>
 
     <div class="active-list-title"><span class="label">Actieve Tafels</span></div>
@@ -106,12 +135,12 @@
 
 <div id="screen-calc" class="container">
     <div class="header-row">
-        <button class="btn-back" onclick="handleBack()">← SLUIT TAFEL</button>
-        <div id="active-table-badge" class="table-badge">Tafel 0</div>
+        <button class="btn-back" onclick="handleBack()">← Sluit Tafel</button>
+        <div id="active-table-badge" class="table-badge">Tafel 1</div>
     </div>
 
     <span class="label">Bedrag op rekening (€)</span>
-    <div class="input-with-action">
+    <div class="input-row">
         <input type="number" id="bill" placeholder="0,00" inputmode="decimal" oninput="autoSave()">
         <button class="btn-plus" onclick="saveQuickBill()">+</button>
     </div>
@@ -119,23 +148,26 @@
     <div id="savedBills" class="saved-chips"></div>
 
     <span class="label">Betaald door gast (€)</span>
-    <input type="number" id="paid" placeholder="0,00" inputmode="decimal" style="margin-bottom:12px">
+    <input type="number" id="paid" placeholder="0,00" inputmode="decimal" style="margin-bottom:15px">
 
     <div class="quick-grid" id="quickButtons"></div>
 
-    <button class="btn-main" onclick="calculate()">BEREKEN</button>
+    <span class="label">Afronden naar? (Optioneel)</span>
+    <input type="number" id="target" placeholder="bv. 50,00" inputmode="decimal" style="margin-bottom:15px" oninput="autoSave()">
+
+    <button class="btn-main" onclick="calculate()">Bereken</button>
 
     <div id="result" class="result"></div>
 </div>
 
 <script>
-    // --- STATE ---
+    // --- APP STATE ---
     let currentTable = "";
-    let activeOrders = JSON.parse(localStorage.getItem('active_orders') || '{}');
-    let quickBills = JSON.parse(localStorage.getItem('quick_bills') || '[]');
+    let activeOrders = JSON.parse(localStorage.getItem('active_orders_v3') || '{}');
+    let quickBills = JSON.parse(localStorage.getItem('quick_bills_v3') || '[]');
     const cashOptions = [10, 20, 50, 100, 200];
 
-    // --- HOME SCREEN ---
+    // --- HOME SCREEN LOGIC ---
     function pressTable(num) {
         vibrate(10);
         if (num === 'clear') currentTable = "";
@@ -149,7 +181,10 @@
 
         vibrate(20);
         document.getElementById('active-table-badge').innerText = "Tafel " + currentTable;
-        document.getElementById('bill').value = activeOrders[currentTable] || "";
+        
+        const data = activeOrders[currentTable] || {bill: "", target: ""};
+        document.getElementById('bill').value = data.bill || "";
+        document.getElementById('target').value = data.target || "";
         document.getElementById('paid').value = "";
         document.getElementById('result').classList.remove('show');
 
@@ -163,25 +198,26 @@
         Object.keys(activeOrders).forEach(t => {
             const card = document.createElement('div');
             card.className = "table-card";
-            card.innerHTML = `<b>Tafel ${t}</b><span>€ ${activeOrders[t]}</span>`;
+            card.innerHTML = `<b>Tafel ${t}</b><span>€ ${activeOrders[t].bill || '0.00'}</span>`;
             card.onclick = () => goToCalc(t);
             cont.appendChild(card);
         });
     }
 
-    // --- CALC SCREEN ---
+    // --- CALC SCREEN LOGIC ---
     function autoSave() {
-        const val = document.getElementById('bill').value;
-        if (val) activeOrders[currentTable] = val;
+        const b = document.getElementById('bill').value;
+        const t = document.getElementById('target').value;
+        if (b || t) activeOrders[currentTable] = { bill: b, target: t };
         else delete activeOrders[currentTable];
-        localStorage.setItem('active_orders', JSON.stringify(activeOrders));
+        localStorage.setItem('active_orders_v3', JSON.stringify(activeOrders));
     }
 
     function handleBack() {
         vibrate(10);
-        if (confirm("Tafel " + currentTable + " verwijderen uit actieve lijst?")) {
+        if (confirm("Tafel " + currentTable + " afrekenen en verwijderen?")) {
             delete activeOrders[currentTable];
-            localStorage.setItem('active_orders', JSON.stringify(activeOrders));
+            localStorage.setItem('active_orders_v3', JSON.stringify(activeOrders));
         }
         currentTable = "";
         document.getElementById('table-display').innerText = "_";
@@ -191,12 +227,16 @@
     }
 
     function saveQuickBill() {
-        const val = document.getElementById('bill').value;
+        const input = document.getElementById('bill');
+        const val = input.value;
         if (val && !quickBills.includes(val)) {
             quickBills.push(parseFloat(val).toFixed(2));
-            localStorage.setItem('quick_bills', JSON.stringify(quickBills));
+            localStorage.setItem('quick_bills_v3', JSON.stringify(quickBills));
             renderQuick();
             vibrate(30);
+            input.value = '';
+            autoSave();
+            input.focus();
         }
     }
 
@@ -209,7 +249,7 @@
             c.onclick = () => { document.getElementById('bill').value = amt; autoSave(); vibrate(10); };
             c.oncontextmenu = (e) => { 
                 e.preventDefault(); 
-                if(confirm('Wissen?')) { quickBills.splice(i, 1); localStorage.setItem('quick_bills', JSON.stringify(quickBills)); renderQuick(); }
+                if(confirm('Verwijderen?')) { quickBills.splice(i, 1); localStorage.setItem('quick_bills_v3', JSON.stringify(quickBills)); renderQuick(); }
             };
             cont.appendChild(c);
         });
@@ -218,9 +258,10 @@
     function calculate() {
         const bill = parseFloat(document.getElementById('bill').value) || 0;
         const paid = parseFloat(document.getElementById('paid').value) || 0;
+        const target = parseFloat(document.getElementById('target').value);
         const resDiv = document.getElementById('result');
 
-        if (paid < bill) {
+        if (paid < bill && isNaN(target)) {
             vibrate([50, 50]);
             resDiv.innerHTML = `<b style="color:#ff4d4d">Te weinig betaald!</b>`;
             resDiv.classList.add('show');
@@ -228,7 +269,16 @@
         }
 
         vibrate(20);
-        let roundedCents = Math.round(((paid - bill) * 100) / 5) * 5;
+        let changeCents = 0, tipCents = 0;
+        
+        if (!isNaN(target)) {
+            tipCents = Math.round((target - bill) * 100);
+            changeCents = Math.round((paid - target) * 100);
+        } else {
+            changeCents = Math.round((paid - bill) * 100);
+        }
+
+        let roundedCents = Math.round(changeCents / 5) * 5;
         const denoms = [5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5];
         const labels = ['€50', '€20', '€10', '€5', '€2', '€1', '50c', '20c', '10c', '5c'];
         
@@ -242,11 +292,13 @@
                 temp -= count * denoms[i];
             }
         }
-        resDiv.innerHTML = html + `</div>`;
+        if (!isNaN(target)) html += `</div><div style="margin-top:15px; font-size:14px; color:#ffd166; font-weight:bold;">Fooi: €${(tipCents/100).toFixed(2)}</div>`;
+        else html += `</div>`;
+
+        resDiv.innerHTML = html;
         resDiv.classList.add('show');
     }
 
-    // --- SETUP ---
     function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
     const qb = document.getElementById('quickButtons');
     cashOptions.forEach(v => {
