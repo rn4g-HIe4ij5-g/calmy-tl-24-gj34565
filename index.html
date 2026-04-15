@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wisselgeld App</title>
+    <title>Wisselgeld Pro</title>
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
@@ -24,14 +24,18 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            padding: 20px 0;
+            overflow-x: hidden;
         }
 
         .container {
             width: 90%;
             max-width: 400px;
+            transition: transform 0.3s ease;
         }
 
+        /* SCREEN MANAGEMENT */
+        #screen-calc { display: none; }
+        
         h1 {
             text-align: center;
             color: var(--accent);
@@ -47,18 +51,70 @@
             display: block;
         }
 
-        .input-group {
-            position: relative;
-            margin-bottom: 15px;
+        /* HOME SCREEN SPECIFIC */
+        .table-display {
+            background: var(--input-bg);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 20px;
+            min-height: 40px;
+            border: 2px solid transparent;
         }
 
-        .input-with-action {
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .numpad button {
+            padding: 25px;
+            font-size: 24px;
+            background: var(--btn-gray);
+            border-radius: 15px;
+            color: white;
+            border: none;
+        }
+
+        .btn-confirm {
+            grid-column: span 3;
+            background: var(--accent) !important;
+            color: black !important;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* CALCULATOR SCREEN SPECIFIC */
+        .header-row {
             display: flex;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-badge {
+            background: var(--accent);
+            color: black;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: var(--accent);
+            padding: 5px;
+            font-size: 14px;
+            text-decoration: underline;
         }
 
         input {
-            flex: 1;
+            width: 100%;
             background: var(--input-bg);
             border: none;
             border-radius: 12px;
@@ -66,8 +122,10 @@
             color: #fff;
             font-size: 18px;
             outline: none;
+            box-sizing: border-box;
         }
 
+        .input-with-action { display: flex; gap: 10px; margin-bottom: 15px; }
         .btn-plus {
             background: var(--accent);
             color: #000;
@@ -76,110 +134,60 @@
             width: 55px;
             font-size: 24px;
             font-weight: bold;
-            cursor: pointer;
         }
 
-        .saved-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
+        .saved-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
+        .chip { background: var(--btn-gray); padding: 8px 12px; border-radius: 10px; font-size: 13px; border: 1px solid #444; }
 
-        .chip {
-            background: var(--btn-gray);
-            border: 1px solid #444;
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 13px;
-            cursor: pointer;
-        }
+        .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
+        .btn-main { background: var(--accent); color: #000; width: 100%; padding: 20px; font-weight: 700; margin-top: 15px; border-radius: 12px; font-size: 18px; }
 
-        .quick-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
-        }
+        .checkbox-row { display: flex; align-items: center; gap: 10px; margin-top: 15px; font-size: 14px; color: var(--label); }
 
-        button {
-            background: var(--btn-gray);
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.1s;
-        }
-
-        button:active { transform: scale(0.95); }
-
-        .btn-main {
-            background: var(--accent);
-            color: #000;
-            width: 100%;
-            font-size: 18px;
-            padding: 20px;
-            margin-top: 20px;
-            font-weight: 700;
-        }
-
-        .checkbox-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 15px;
-            font-size: 14px;
-            color: var(--label);
-        }
-
-        .result {
-            margin-top: 25px;
-            background: var(--input-bg);
-            padding: 20px;
-            border-radius: 15px;
-            display: none;
-            border-left: 5px solid var(--accent);
-        }
-
-        .result.show { display: block; animation: fadeIn 0.3s; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } }
+        .result { margin-top: 25px; background: var(--input-bg); padding: 20px; border-radius: 15px; display: none; border-left: 5px solid var(--accent); }
+        .result.show { display: block; }
 
         .coin-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
-        .coin-item {
-            background: rgba(255,255,255,0.05);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            border: 1px solid #333;
-        }
+        .coin-item { background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 20px; font-size: 13px; display: flex; align-items: center; border: 1px solid #333; }
         .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
-        .gold { background: #ffd700; }
-        .silver { background: #c0c0c0; }
-        .bronze { background: #cd7f32; }
+        .gold { background: #ffd700; } .silver { background: #c0c0c0; } .bronze { background: #cd7f32; }
 
-        .history {
-            text-align: center;
-            font-size: 11px;
-            color: #555;
-            margin-top: 30px;
-            border-top: 1px solid #222;
-            padding-top: 15px;
-        }
+        button { cursor: pointer; border: none; transition: transform 0.1s; }
+        button:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div id="screen-home" class="container">
+    <h1>Tafel Nummer</h1>
+    <div id="table-display" class="table-display">_</div>
+    
+    <div class="numpad">
+        <button onclick="pressTable('1')">1</button>
+        <button onclick="pressTable('2')">2</button>
+        <button onclick="pressTable('3')">3</button>
+        <button onclick="pressTable('4')">4</button>
+        <button onclick="pressTable('5')">5</button>
+        <button onclick="pressTable('6')">6</button>
+        <button onclick="pressTable('7')">7</button>
+        <button onclick="pressTable('8')">8</button>
+        <button onclick="pressTable('9')">9</button>
+        <button onclick="pressTable('clear')" style="color:#ff4d4d">C</button>
+        <button onclick="pressTable('0')">0</button>
+        <button onclick="goToCalc()" class="btn-confirm">VERDER</button>
+    </div>
+</div>
+
+<div id="screen-calc" class="container">
+    <div class="header-row">
+        <button class="btn-back" onclick="goToHome()">← Terug</button>
+        <div id="active-table-badge" class="table-badge">Tafel 0</div>
+    </div>
+
     <h1>Wisselgeld</h1>
 
     <span class="label">Te betalen bedrag (€)</span>
-    <div class="input-group input-with-action">
+    <div class="input-with-action">
         <input type="number" id="bill" placeholder="0,00" inputmode="decimal">
         <button class="btn-plus" onclick="saveBill()">+</button>
     </div>
@@ -187,16 +195,12 @@
     <div id="savedBills" class="saved-chips"></div>
 
     <span class="label">Betaald door gast (€)</span>
-    <div class="input-group">
-        <input type="number" id="paid" placeholder="0,00" inputmode="decimal">
-    </div>
+    <input type="number" id="paid" placeholder="0,00" inputmode="decimal" style="margin-bottom:15px">
 
     <div class="quick-grid" id="quickButtons"></div>
 
     <span class="label">Afronden naar? (Optioneel)</span>
-    <div class="input-group">
-        <input type="number" id="target" placeholder="bv. 50,00" inputmode="decimal">
-    </div>
+    <input type="number" id="target" placeholder="bv. 50,00" inputmode="decimal" style="margin-bottom:15px">
 
     <div class="checkbox-row">
         <input type="checkbox" id="tipMode"> Volledig fooi (geen wisselgeld)
@@ -205,12 +209,52 @@
     <button class="btn-main" onclick="calculate()">Bereken Wisselgeld</button>
 
     <div id="result" class="result"></div>
-    <div id="history" class="history"></div>
 </div>
 
 <script>
-    const quickValues = [10, 20, 50, 100, 200];
+    // --- APP STATE ---
+    let currentTable = "";
     let savedBills = JSON.parse(localStorage.getItem('saved_bills') || '[]');
+    const quickValues = [10, 20, 50, 100, 200];
+
+    // --- HOME SCREEN LOGIC ---
+    function pressTable(num) {
+        vibrate(10);
+        if (num === 'clear') {
+            currentTable = "";
+        } else {
+            if (currentTable.length < 3) currentTable += num;
+        }
+        document.getElementById('table-display').innerText = currentTable || "_";
+    }
+
+    function goToCalc() {
+        if (!currentTable) {
+            vibrate([50, 50]);
+            return;
+        }
+        vibrate(20);
+        document.getElementById('active-table-badge').innerText = "Tafel " + currentTable;
+        document.getElementById('screen-home').style.display = "none";
+        document.getElementById('screen-calc').style.display = "block";
+    }
+
+    function goToHome() {
+        vibrate(10);
+        // Reset everything for the next table
+        currentTable = "";
+        document.getElementById('table-display').innerText = "_";
+        document.getElementById('bill').value = "";
+        document.getElementById('paid').value = "";
+        document.getElementById('target').value = "";
+        document.getElementById('result').classList.remove('show');
+        
+        document.getElementById('screen-calc').style.display = "none";
+        document.getElementById('screen-home').style.display = "block";
+    }
+
+    // --- CALCULATOR LOGIC ---
+    function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
 
     const qb = document.getElementById('quickButtons');
     quickValues.forEach(v => {
@@ -224,20 +268,15 @@
         qb.appendChild(b);
     });
 
-    function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
-
     function saveBill() {
-        const billInput = document.getElementById('bill');
-        const val = billInput.value;
-        if (val && !savedBills.includes(val)) {
-            savedBills.push(parseFloat(val).toFixed(2));
+        const input = document.getElementById('bill');
+        if (input.value && !savedBills.includes(input.value)) {
+            savedBills.push(parseFloat(input.value).toFixed(2));
             localStorage.setItem('saved_bills', JSON.stringify(savedBills));
             renderSaved();
             vibrate(30);
-            
-            // This clears the box and keeps it ready for the next number
-            billInput.value = '';
-            billInput.focus();
+            input.value = '';
+            input.focus();
         }
     }
 
@@ -267,35 +306,18 @@
         if (paid < bill && !isTipOnly) {
             vibrate([50, 50]);
             resDiv.innerHTML = `<b style="color:#ff4d4d">Te weinig betaald!</b>`;
-            resDiv.className = "result show";
+            resDiv.classList.add('show');
             return;
         }
 
         vibrate(20);
-        let changeCents = 0;
-        let tipCents = 0;
-        let useTarget = !isNaN(target);
-
-        if (isTipOnly) {
-            resDiv.innerHTML = `<div style="color:var(--accent); font-size:20px; font-weight:bold;">Alles is fooi!</div><div style="margin-top:10px">Bedrag: €${(paid-bill).toFixed(2)}</div>`;
-            resDiv.className = "result show";
-            return;
-        }
-
-        if (useTarget) {
-            tipCents = Math.round((target - bill) * 100);
-            changeCents = Math.round((paid - target) * 100);
-        } else {
-            changeCents = Math.round((paid - bill) * 100);
-        }
-
+        let changeCents = isTipOnly ? 0 : (isNaN(target) ? Math.round((paid - bill) * 100) : Math.round((paid - target) * 100));
         let roundedCents = Math.round(changeCents / 5) * 5;
+        
         const denoms = [5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5];
         const labels = ['€50', '€20', '€10', '€5', '€2', '€1', '50c', '20c', '10c', '5c'];
         
-        let html = `<div style="font-size:12px; color:#888; margin-bottom:5px;">TERUGGEVEN:</div>`;
-        html += `<div style="font-size:32px; font-weight:800; color:var(--accent)">€${(roundedCents/100).toFixed(2)}</div>`;
-        
+        let html = `<div style="font-size:32px; font-weight:800; color:var(--accent)">€${(roundedCents/100).toFixed(2)}</div>`;
         html += `<div class="coin-list">`;
         let temp = roundedCents;
         for (let i = 0; i < denoms.length; i++) {
@@ -307,12 +329,12 @@
             }
         }
         html += `</div>`;
+        
+        if (!isNaN(target)) html += `<div style="margin-top:10px; color:#ffd166">Fooi: €${(target-bill).toFixed(2)}</div>`;
+        if (isTipOnly) html = `<div style="color:var(--accent); font-size:20px; font-weight:bold;">Alles is fooi: €${(paid-bill).toFixed(2)}</div>`;
 
-        if (useTarget) html += `<div style="margin-top:15px; font-size:14px; color:#ffd166">Fooi: €${(tipCents/100).toFixed(2)}</div>`;
-
-        document.getElementById('history').innerText = `Laatst: €${bill.toFixed(2)} met €${paid.toFixed(2)}`;
         resDiv.innerHTML = html;
-        resDiv.className = "result show";
+        resDiv.classList.add('show');
     }
 
     renderSaved();
