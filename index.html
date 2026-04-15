@@ -7,196 +7,278 @@
     <link rel="manifest" href="manifest.json">
     <style>
         :root {
-            --bg: #121212;
-            --card: #1e1e1e;
+            --bg: #0c0c0c;
+            --input-bg: #1e1e1e;
             --accent: #00ff9c;
-            --tip-color: #ffd166;
-            --btn: #2e2e2e;
+            --btn-gray: #2e2e2e;
             --text: #ffffff;
+            --label: #888;
         }
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg);
             color: var(--text);
             display: flex;
             justify-content: center;
-            padding: 20px 0;
+            align-items: center;
             min-height: 100vh;
-            box-sizing: border-box;
+            padding: 20px 0;
         }
 
         .container {
-            width: 92%;
-            max-width: 360px;
+            width: 90%;
+            max-width: 400px;
         }
 
         h1 {
             text-align: center;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
             color: var(--accent);
+            font-size: 24px;
+            margin-bottom: 25px;
+            font-weight: 800;
+        }
+
+        .label {
+            font-size: 12px;
+            color: var(--label);
+            margin-bottom: 6px;
+            display: block;
         }
 
         .input-group {
-            margin-bottom: 12px;
+            position: relative;
+            margin-bottom: 15px;
         }
 
-        label {
-            display: block;
-            font-size: 12px;
-            margin-bottom: 4px;
-            color: #888;
-            padding-left: 4px;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 14px;
-            font-size: 18px;
-            border: 2px solid transparent;
-            border-radius: 12px;
-            background: var(--card);
-            color: #fff;
-            box-sizing: border-box;
-            outline: none;
-            transition: border 0.2s;
-        }
-
-        input[type="number"]:focus {
-            border-color: var(--accent);
-        }
-
-        .checkbox-container {
+        .input-with-action {
             display: flex;
-            align-items: center;
             gap: 10px;
-            margin: 15px 0;
-            font-size: 14px;
+        }
+
+        input {
+            flex: 1;
+            background: var(--input-bg);
+            border: none;
+            border-radius: 12px;
+            padding: 18px;
+            color: #fff;
+            font-size: 18px;
+            outline: none;
+        }
+
+        /* The "+" button to save bills */
+        .btn-plus {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            width: 55px;
+            font-size: 24px;
+            font-weight: bold;
             cursor: pointer;
         }
 
-        .quick-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+        .saved-chips {
+            display: flex;
+            flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 15px;
         }
 
+        .chip {
+            background: var(--btn-gray);
+            border: 1px solid #444;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
         button {
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
+            background: var(--btn-gray);
+            color: #fff;
             border: none;
             border-radius: 12px;
-            background: var(--btn);
-            color: #fff;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
+            transition: transform 0.1s;
         }
 
-        button:active {
-            transform: scale(0.95);
-            background: #444;
-        }
+        button:active { transform: scale(0.95); }
 
-        .btn-calc {
-            width: 100%;
+        .btn-main {
             background: var(--accent);
             color: #000;
+            width: 100%;
             font-size: 18px;
-            margin-top: 5px;
+            padding: 20px;
+            margin-top: 20px;
+            font-weight: 700;
         }
 
-        .btn-calc:active {
-            background: #00cc7d;
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--label);
         }
 
         .result {
-            margin-top: 20px;
-            background: var(--card);
-            padding: 15px;
-            border-radius: 12px;
+            margin-top: 25px;
+            background: var(--input-bg);
+            padding: 20px;
+            border-radius: 15px;
             display: none;
-            animation: slideIn 0.3s ease-out;
+            border-left: 5px solid var(--accent);
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .result.show { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } }
+
+        /* Visual Coins Styles */
+        .coin-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
+        .coin-item {
+            background: rgba(255,255,255,0.05);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #333;
         }
+        .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
+        .gold { background: #ffd700; }
+        .silver { background: #c0c0c0; }
+        .bronze { background: #cd7f32; }
 
-        .result.show { display: block; }
-        .result.change-mode { border: 2px solid var(--accent); }
-        .result.tip-mode { border: 2px solid var(--tip-color); background: #2a2412; }
-
-        .highlight { font-size: 24px; font-weight: bold; color: var(--accent); margin-bottom: 5px; }
-        .denoms { font-size: 15px; line-height: 1.4; color: #ccc; }
-        .tip-text { color: var(--tip-color); font-weight: bold; margin-top: 8px; font-size: 18px; }
+        .history {
+            text-align: center;
+            font-size: 11px;
+            color: #555;
+            margin-top: 30px;
+            border-top: 1px solid #222;
+            padding-top: 15px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Wisselgeld</h1>
-    
-    <div class="input-group">
-        <label>Te betalen bedrag (€)</label>
-        <input type="number" step="0.01" id="bill" placeholder="0,00" inputmode="decimal">
+
+    <span class="label">Te betalen bedrag (€)</span>
+    <div class="input-group input-with-action">
+        <input type="number" id="bill" placeholder="0,00" inputmode="decimal">
+        <button class="btn-plus" onclick="saveBill()">+</button>
     </div>
 
+    <div id="savedBills" class="saved-chips"></div>
+
+    <span class="label">Betaald door gast (€)</span>
     <div class="input-group">
-        <label>Betaald door gast (€)</label>
-        <input type="number" step="0.01" id="paid" placeholder="0,00" inputmode="decimal">
+        <input type="number" id="paid" placeholder="0,00" inputmode="decimal">
     </div>
 
-    <div class="quick-buttons" id="quickButtons"></div>
+    <div class="quick-grid" id="quickButtons"></div>
 
+    <span class="label">Afronden naar? (Optioneel)</span>
     <div class="input-group">
-        <label>Afronden naar? (Optioneel)</label>
-        <input type="number" step="0.01" id="target" placeholder="bv. 50,00" inputmode="decimal">
+        <input type="number" id="target" placeholder="bv. 50,00" inputmode="decimal">
     </div>
 
-    <label class="checkbox-container">
+    <div class="checkbox-row">
         <input type="checkbox" id="tipMode"> Volledig fooi (geen wisselgeld)
-    </label>
+    </div>
 
-    <button class="btn-calc" onclick="calculateChange()">Bereken Wisselgeld</button>
+    <button class="btn-main" onclick="calculate()">Bereken Wisselgeld</button>
 
-    <div class="result" id="result"></div>
+    <div id="result" class="result"></div>
+    <div id="history" class="history"></div>
 </div>
 
 <script>
     const quickValues = [10, 20, 50, 100, 200];
+    let savedBills = JSON.parse(localStorage.getItem('saved_bills') || '[]');
+
+    // Setup Quick Buttons
     const qb = document.getElementById('quickButtons');
-    
     quickValues.forEach(v => {
         const b = document.createElement('button');
         b.innerText = '€' + v;
         b.onclick = () => {
+            vibrate(10);
             document.getElementById('paid').value = v.toFixed(2);
-            calculateChange();
+            calculate();
         };
         qb.appendChild(b);
     });
 
-    function round5(cents) { return Math.round(cents / 5) * 5; }
+    function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
 
-    function calculateChange() {
+    function saveBill() {
+        const val = document.getElementById('bill').value;
+        if (val && !savedBills.includes(val)) {
+            savedBills.push(parseFloat(val).toFixed(2));
+            localStorage.setItem('saved_bills', JSON.stringify(savedBills));
+            renderSaved();
+            vibrate(30);
+        }
+    }
+
+    function renderSaved() {
+        const cont = document.getElementById('savedBills');
+        cont.innerHTML = '';
+        savedBills.forEach((amt, i) => {
+            const c = document.createElement('div');
+            c.className = 'chip';
+            c.innerText = '€' + amt;
+            c.onclick = () => { document.getElementById('bill').value = amt; vibrate(10); };
+            c.oncontextmenu = (e) => { 
+                e.preventDefault(); 
+                if(confirm('Wissen?')) { savedBills.splice(i, 1); localStorage.setItem('saved_bills', JSON.stringify(savedBills)); renderSaved(); }
+            };
+            cont.appendChild(c);
+        });
+    }
+
+    function calculate() {
         const bill = parseFloat(document.getElementById('bill').value) || 0;
         const paid = parseFloat(document.getElementById('paid').value) || 0;
         const target = parseFloat(document.getElementById('target').value);
         const isTipOnly = document.getElementById('tipMode').checked;
-        const resultDiv = document.getElementById('result');
+        const resDiv = document.getElementById('result');
 
-        if (bill <= 0 || paid <= 0) return;
+        if (paid < bill && !isTipOnly) {
+            vibrate([50, 50]);
+            resDiv.innerHTML = `<b style="color:#ff4d4d">Te weinig betaald!</b>`;
+            resDiv.className = "result show";
+            return;
+        }
 
-        resultDiv.classList.remove('tip-mode', 'change-mode', 'show');
-        
+        vibrate(20);
         let changeCents = 0;
         let tipCents = 0;
         let useTarget = !isNaN(target);
+
+        if (isTipOnly) {
+            resDiv.innerHTML = `<div style="color:var(--accent); font-size:20px; font-weight:bold;">Alles is fooi!</div><div style="margin-top:10px">Bedrag: €${(paid-bill).toFixed(2)}</div>`;
+            resDiv.className = "result show";
+            return;
+        }
 
         if (useTarget) {
             tipCents = Math.round((target - bill) * 100);
@@ -205,43 +287,35 @@
             changeCents = Math.round((paid - bill) * 100);
         }
 
-        if (changeCents < 0 && !isTipOnly) {
-            resultDiv.innerHTML = '<div class="highlight" style="color:#ff4d4d">Te weinig betaald!</div>';
-            resultDiv.classList.add('show');
-            return;
-        }
-
-        if (isTipOnly) {
-            const totalTip = (paid - bill).toFixed(2);
-            resultDiv.innerHTML = `<div class="highlight">Geen wisselgeld</div><div class="tip-text">Fooi: €${totalTip}</div>`;
-            resultDiv.classList.add('show', 'tip-mode');
-            return;
-        }
-
-        let roundedChange = round5(changeCents);
-        const denoms = [2000, 1000, 500, 200, 100, 50, 20, 10, 5];
-        const labels = ['€20', '€10', '€5', '€2', '€1', '50c', '20c', '10c', '5c'];
-        let stack = [];
-
-        let tempChange = roundedChange;
+        // 5-cent Dutch Rounding
+        let roundedCents = Math.round(changeCents / 5) * 5;
+        
+        const denoms = [5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5];
+        const labels = ['€50', '€20', '€10', '€5', '€2', '€1', '50c', '20c', '10c', '5c'];
+        
+        let html = `<div style="font-size:12px; color:#888; margin-bottom:5px;">TERUGGEVEN:</div>`;
+        html += `<div style="font-size:32px; font-weight:800; color:var(--accent)">€${(roundedCents/100).toFixed(2)}</div>`;
+        
+        html += `<div class="coin-list">`;
+        let temp = roundedCents;
         for (let i = 0; i < denoms.length; i++) {
-            let count = Math.floor(tempChange / denoms[i]);
+            let count = Math.floor(temp / denoms[i]);
             if (count > 0) {
-                stack.push(`<strong>${count}x</strong> ${labels[i]}`);
-                tempChange -= count * denoms[i];
+                let cl = denoms[i] >= 500 ? 'silver' : (denoms[i] >= 100 ? 'gold' : 'bronze');
+                html += `<div class="coin-item"><span class="dot ${cl}"></span><b>${count}x</b>&nbsp;${labels[i]}</div>`;
+                temp -= count * denoms[i];
             }
         }
+        html += `</div>`;
 
-        let html = `<div class="highlight">Terug: €${(roundedChange / 100).toFixed(2)}</div>`;
-        html += `<div class="denoms">${stack.join('<br>')}</div>`;
-        if (useTarget) html += `<div class="tip-text">Fooi: €${(tipCents / 100).toFixed(2)}</div>`;
+        if (useTarget) html += `<div style="margin-top:15px; font-size:14px; color:#ffd166">Fooi: €${(tipCents/100).toFixed(2)}</div>`;
 
-        resultDiv.innerHTML = html;
-        resultDiv.classList.add('show', 'change-mode');
+        document.getElementById('history').innerText = `Laatst: €${bill.toFixed(2)} met €${paid.toFixed(2)}`;
+        resDiv.innerHTML = html;
+        resDiv.className = "result show";
     }
 
-    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
+    renderSaved();
 </script>
-
 </body>
 </html>
