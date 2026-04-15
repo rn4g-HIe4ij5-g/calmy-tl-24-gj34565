@@ -11,7 +11,6 @@
             --input-bg: #1e1e1e;
             --accent: #00ff9c;
             --btn-gray: #262626;
-            --btn-hover: #333333;
             --text: #ffffff;
             --label: #888;
         }
@@ -27,77 +26,59 @@
         #screen-calc { display: none; }
         
         h1 { text-align: center; color: var(--accent); font-size: 22px; font-weight: 800; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        .label { font-size: 11px; color: var(--label); margin-bottom: 6px; display: block; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px; }
+        .label { font-size: 11px; color: var(--label); margin-bottom: 6px; display: block; text-transform: uppercase; font-weight: 600; }
 
         /* --- HOME SCREEN --- */
         .table-display {
             background: var(--input-bg); padding: 20px; border-radius: 16px;
             text-align: center; font-size: 32px; font-weight: 800;
             color: var(--accent); margin-bottom: 20px; min-height: 40px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
 
         .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .numpad button { padding: 22px; font-size: 24px; background: var(--btn-gray); border-radius: 16px; color: white; font-weight: bold; }
-        .btn-confirm { grid-column: span 3; background: var(--accent) !important; color: black !important; margin-top: 10px; text-transform: uppercase; }
+        .btn-confirm { grid-column: span 3; background: var(--accent) !important; color: black !important; margin-top: 10px; }
 
         .active-list-title { margin-top: 30px; border-top: 1px solid #222; padding-top: 20px; }
         .active-tables-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; }
-        .table-card {
-            background: var(--input-bg); border: 1px solid #333;
-            padding: 15px; border-radius: 14px; text-align: left; transition: border 0.2s;
-        }
-        .table-card:active { border-color: var(--accent); }
+        .table-card { background: var(--input-bg); border: 1px solid #333; padding: 15px; border-radius: 14px; text-align: left; }
         .table-card b { color: var(--accent); font-size: 17px; display: block; }
         .table-card span { font-size: 13px; color: #aaa; margin-top: 5px; display: block; }
 
         /* --- CALC SCREEN --- */
         .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .table-badge { background: var(--accent); color: black; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 13px; text-transform: uppercase; }
-        .btn-back { background: transparent; color: #ff4d4d; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .table-badge { background: var(--accent); color: black; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 13px; }
+        .btn-back { background: transparent; color: #ff4d4d; font-size: 14px; font-weight: 800; }
 
         input {
             width: 100%; background: var(--input-bg); border: 1px solid #333; border-radius: 14px;
             padding: 18px; color: #fff; font-size: 18px; outline: none; box-sizing: border-box;
-            transition: border 0.2s;
         }
         input:focus { border-color: var(--accent); }
 
         .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
         .btn-plus { background: var(--accent); color: #000; border-radius: 14px; width: 65px; font-size: 28px; font-weight: bold; }
 
+        /* SPLIT SECTION */
+        .split-box {
+            background: #161616; border: 1px dashed #444; padding: 15px; border-radius: 14px; margin-bottom: 15px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .split-controls { display: flex; align-items: center; gap: 10px; }
+        .split-btn { background: var(--btn-gray); width: 35px; height: 35px; border-radius: 8px; font-size: 20px; color: white; display: flex; align-items: center; justify-content: center; }
+        .split-info { text-align: right; }
+        .split-info b { color: var(--accent); display: block; font-size: 18px; }
+
         .saved-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; }
         .chip { background: var(--btn-gray); padding: 10px 14px; border-radius: 10px; font-size: 13px; border: 1px solid #444; font-weight: 600; }
 
-        /* Stylized Quick Buttons */
         .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 15px; }
-        .quick-grid button { 
-            background: var(--btn-gray); 
-            color: #fff; 
-            padding: 15px; 
-            font-size: 16px; 
-            font-weight: 700; 
-            border-radius: 12px; 
-            border: 1px solid #3d3d3d;
-        }
+        .quick-grid button { background: var(--btn-gray); color: #fff; padding: 15px; font-size: 16px; font-weight: 700; border-radius: 12px; border: 1px solid #3d3d3d; }
 
-        .btn-main { 
-            background: var(--accent); 
-            color: #000; 
-            width: 100%; 
-            padding: 20px; 
-            font-weight: 800; 
-            border-radius: 16px; 
-            font-size: 18px; 
-            margin-top: 10px; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .btn-main { background: var(--accent); color: #000; width: 100%; padding: 20px; font-weight: 800; border-radius: 16px; font-size: 18px; margin-top: 10px; text-transform: uppercase; }
 
-        /* Results & Coins */
         .result { margin-top: 25px; background: var(--input-bg); padding: 20px; border-radius: 16px; display: none; border-left: 6px solid var(--accent); }
-        .result.show { display: block; animation: slideIn 0.3s ease-out; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } }
+        .result.show { display: block; }
         
         .coin-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
         .coin-item { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; border: 1px solid #333; }
@@ -113,22 +94,13 @@
 <div id="screen-home" class="container">
     <h1>Tafel Kiezen</h1>
     <div id="table-display" class="table-display">_</div>
-    
     <div class="numpad">
-        <button onclick="pressTable('1')">1</button>
-        <button onclick="pressTable('2')">2</button>
-        <button onclick="pressTable('3')">3</button>
-        <button onclick="pressTable('4')">4</button>
-        <button onclick="pressTable('5')">5</button>
-        <button onclick="pressTable('6')">6</button>
-        <button onclick="pressTable('7')">7</button>
-        <button onclick="pressTable('8')">8</button>
-        <button onclick="pressTable('9')">9</button>
-        <button onclick="pressTable('clear')" style="color:#ff4d4d">C</button>
-        <button onclick="pressTable('0')">0</button>
+        <button onclick="pressTable('1')">1</button><button onclick="pressTable('2')">2</button><button onclick="pressTable('3')">3</button>
+        <button onclick="pressTable('4')">4</button><button onclick="pressTable('5')">5</button><button onclick="pressTable('6')">6</button>
+        <button onclick="pressTable('7')">7</button><button onclick="pressTable('8')">8</button><button onclick="pressTable('9')">9</button>
+        <button onclick="pressTable('clear')" style="color:#ff4d4d">C</button><button onclick="pressTable('0')">0</button>
         <button onclick="goToCalc()" class="btn-confirm">Verder</button>
     </div>
-
     <div class="active-list-title"><span class="label">Actieve Tafels</span></div>
     <div id="active-tables" class="active-tables-grid"></div>
 </div>
@@ -145,6 +117,18 @@
         <button class="btn-plus" onclick="saveQuickBill()">+</button>
     </div>
 
+    <div class="split-box">
+        <div class="split-controls">
+            <button class="split-btn" onclick="updateSplit(-1)">−</button>
+            <span id="num-people" style="font-weight:bold; font-size: 18px;">1p</span>
+            <button class="split-btn" onclick="updateSplit(1)">+</button>
+        </div>
+        <div class="split-info" onclick="useSplitAmount()" style="cursor:pointer">
+            <span class="label" style="margin:0">Per persoon:</span>
+            <b id="per-person-display">€ 0.00</b>
+        </div>
+    </div>
+
     <div id="savedBills" class="saved-chips"></div>
 
     <span class="label">Betaald door gast (€)</span>
@@ -156,18 +140,16 @@
     <input type="number" id="target" placeholder="bv. 50,00" inputmode="decimal" style="margin-bottom:15px" oninput="autoSave()">
 
     <button class="btn-main" onclick="calculate()">Bereken</button>
-
     <div id="result" class="result"></div>
 </div>
 
 <script>
-    // --- APP STATE ---
     let currentTable = "";
-    let activeOrders = JSON.parse(localStorage.getItem('active_orders_v3') || '{}');
-    let quickBills = JSON.parse(localStorage.getItem('quick_bills_v3') || '[]');
+    let splitCount = 1;
+    let activeOrders = JSON.parse(localStorage.getItem('active_orders_v4') || '{}');
+    let quickBills = JSON.parse(localStorage.getItem('quick_bills_v4') || '[]');
     const cashOptions = [10, 20, 50, 100, 200];
 
-    // --- HOME SCREEN LOGIC ---
     function pressTable(num) {
         vibrate(10);
         if (num === 'clear') currentTable = "";
@@ -178,16 +160,15 @@
     function goToCalc(existingTable = null) {
         if (existingTable) currentTable = existingTable;
         if (!currentTable) return vibrate([40, 40]);
-
         vibrate(20);
         document.getElementById('active-table-badge').innerText = "Tafel " + currentTable;
-        
-        const data = activeOrders[currentTable] || {bill: "", target: ""};
+        const data = activeOrders[currentTable] || {bill: "", target: "", split: 1};
         document.getElementById('bill').value = data.bill || "";
         document.getElementById('target').value = data.target || "";
+        splitCount = data.split || 1;
+        updateSplit(0);
         document.getElementById('paid').value = "";
         document.getElementById('result').classList.remove('show');
-
         document.getElementById('screen-home').style.display = "none";
         document.getElementById('screen-calc').style.display = "block";
     }
@@ -204,20 +185,38 @@
         });
     }
 
-    // --- CALC SCREEN LOGIC ---
+    function updateSplit(val) {
+        splitCount = Math.max(1, splitCount + val);
+        document.getElementById('num-people').innerText = splitCount + "p";
+        const bill = parseFloat(document.getElementById('bill').value) || 0;
+        const perPerson = (bill / splitCount).toFixed(2);
+        document.getElementById('per-person-display').innerText = "€ " + perPerson;
+        autoSave();
+        vibrate(5);
+    }
+
+    function useSplitAmount() {
+        const bill = parseFloat(document.getElementById('bill').value) || 0;
+        const perPerson = (bill / splitCount).toFixed(2);
+        document.getElementById('bill').value = perPerson;
+        splitCount = 1; // Reset split to 1 since we are now calculating for 1 share
+        updateSplit(0);
+        vibrate(20);
+    }
+
     function autoSave() {
         const b = document.getElementById('bill').value;
         const t = document.getElementById('target').value;
-        if (b || t) activeOrders[currentTable] = { bill: b, target: t };
+        if (b || t || splitCount > 1) activeOrders[currentTable] = { bill: b, target: t, split: splitCount };
         else delete activeOrders[currentTable];
-        localStorage.setItem('active_orders_v3', JSON.stringify(activeOrders));
+        localStorage.setItem('active_orders_v4', JSON.stringify(activeOrders));
     }
 
     function handleBack() {
         vibrate(10);
         if (confirm("Tafel " + currentTable + " afrekenen en verwijderen?")) {
             delete activeOrders[currentTable];
-            localStorage.setItem('active_orders_v3', JSON.stringify(activeOrders));
+            localStorage.setItem('active_orders_v4', JSON.stringify(activeOrders));
         }
         currentTable = "";
         document.getElementById('table-display').innerText = "_";
@@ -228,15 +227,10 @@
 
     function saveQuickBill() {
         const input = document.getElementById('bill');
-        const val = input.value;
-        if (val && !quickBills.includes(val)) {
-            quickBills.push(parseFloat(val).toFixed(2));
-            localStorage.setItem('quick_bills_v3', JSON.stringify(quickBills));
-            renderQuick();
-            vibrate(30);
-            input.value = '';
-            autoSave();
-            input.focus();
+        if (input.value && !quickBills.includes(input.value)) {
+            quickBills.push(parseFloat(input.value).toFixed(2));
+            localStorage.setItem('quick_bills_v4', JSON.stringify(quickBills));
+            renderQuick(); vibrate(30); input.value = ''; autoSave(); input.focus();
         }
     }
 
@@ -246,11 +240,8 @@
         quickBills.forEach((amt, i) => {
             const c = document.createElement('div');
             c.className = 'chip'; c.innerText = '€' + amt;
-            c.onclick = () => { document.getElementById('bill').value = amt; autoSave(); vibrate(10); };
-            c.oncontextmenu = (e) => { 
-                e.preventDefault(); 
-                if(confirm('Verwijderen?')) { quickBills.splice(i, 1); localStorage.setItem('quick_bills_v3', JSON.stringify(quickBills)); renderQuick(); }
-            };
+            c.onclick = () => { document.getElementById('bill').value = amt; updateSplit(0); vibrate(10); };
+            c.oncontextmenu = (e) => { e.preventDefault(); if(confirm('Wissen?')) { quickBills.splice(i, 1); localStorage.setItem('quick_bills_v4', JSON.stringify(quickBills)); renderQuick(); } };
             cont.appendChild(c);
         });
     }
@@ -260,28 +251,13 @@
         const paid = parseFloat(document.getElementById('paid').value) || 0;
         const target = parseFloat(document.getElementById('target').value);
         const resDiv = document.getElementById('result');
-
-        if (paid < bill && isNaN(target)) {
-            vibrate([50, 50]);
-            resDiv.innerHTML = `<b style="color:#ff4d4d">Te weinig betaald!</b>`;
-            resDiv.classList.add('show');
-            return;
-        }
-
+        if (paid < bill && isNaN(target)) { vibrate([50, 50]); resDiv.innerHTML = `<b style="color:#ff4d4d">Te weinig!</b>`; resDiv.classList.add('show'); return; }
         vibrate(20);
-        let changeCents = 0, tipCents = 0;
-        
-        if (!isNaN(target)) {
-            tipCents = Math.round((target - bill) * 100);
-            changeCents = Math.round((paid - target) * 100);
-        } else {
-            changeCents = Math.round((paid - bill) * 100);
-        }
-
+        let changeCents = !isNaN(target) ? Math.round((paid - target) * 100) : Math.round((paid - bill) * 100);
+        let tipCents = !isNaN(target) ? Math.round((target - bill) * 100) : 0;
         let roundedCents = Math.round(changeCents / 5) * 5;
         const denoms = [5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5];
         const labels = ['€50', '€20', '€10', '€5', '€2', '€1', '50c', '20c', '10c', '5c'];
-        
         let html = `<div style="font-size:32px; font-weight:800; color:var(--accent)">€${(roundedCents/100).toFixed(2)}</div><div class="coin-list">`;
         let temp = roundedCents;
         for (let i = 0; i < denoms.length; i++) {
@@ -294,9 +270,7 @@
         }
         if (!isNaN(target)) html += `</div><div style="margin-top:15px; font-size:14px; color:#ffd166; font-weight:bold;">Fooi: €${(tipCents/100).toFixed(2)}</div>`;
         else html += `</div>`;
-
-        resDiv.innerHTML = html;
-        resDiv.classList.add('show');
+        resDiv.innerHTML = html; resDiv.classList.add('show');
     }
 
     function vibrate(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
@@ -307,9 +281,7 @@
         b.onclick = () => { vibrate(10); document.getElementById('paid').value = v.toFixed(2); calculate(); };
         qb.appendChild(b);
     });
-
-    renderActiveTables();
-    renderQuick();
+    renderActiveTables(); renderQuick();
 </script>
 </body>
 </html>
