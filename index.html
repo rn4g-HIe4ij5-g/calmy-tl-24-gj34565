@@ -59,7 +59,6 @@
         .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
         .btn-plus { background: var(--accent); color: #000; border-radius: 14px; width: 65px; font-size: 28px; font-weight: bold; }
 
-        /* SPLIT SECTION */
         .split-box {
             background: #161616; border: 1px dashed #444; padding: 15px; border-radius: 14px; margin-bottom: 15px;
             display: flex; align-items: center; justify-content: space-between;
@@ -77,13 +76,32 @@
 
         .btn-main { background: var(--accent); color: #000; width: 100%; padding: 20px; font-weight: 800; border-radius: 16px; font-size: 18px; margin-top: 10px; text-transform: uppercase; }
 
-        .result { margin-top: 25px; background: var(--input-bg); padding: 20px; border-radius: 16px; display: none; border-left: 6px solid var(--accent); }
-        .result.show { display: block; }
+        /* --- BIGGER RESULTS SECTION --- */
+        .result { margin-top: 25px; background: var(--input-bg); padding: 25px; border-radius: 20px; display: none; border-left: 8px solid var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .result.show { display: block; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(15px); } }
+
+        .total-amount { font-size: 42px; font-weight: 900; color: var(--accent); margin-bottom: 10px; }
         
-        .coin-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px; }
-        .coin-item { background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; border: 1px solid #333; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; }
-        .gold { background: #ffd700; } .silver { background: #c0c0c0; } .bronze { background: #cd7f32; }
+        .coin-list { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+        .coin-item { 
+            background: rgba(255,255,255,0.08); 
+            padding: 12px 18px; 
+            border-radius: 15px; 
+            font-size: 18px; /* Bigger Font */
+            display: flex; 
+            align-items: center; 
+            border: 1px solid #444; 
+        }
+        .dot { 
+            width: 12px; /* Bigger Dot */
+            height: 12px; 
+            border-radius: 50%; 
+            margin-right: 12px; 
+        }
+        .gold { background: #ffd700; box-shadow: 0 0 8px #ffd700; } 
+        .silver { background: #c0c0c0; box-shadow: 0 0 8px #c0c0c0; } 
+        .bronze { background: #cd7f32; box-shadow: 0 0 8px #cd7f32; }
 
         button { cursor: pointer; border: none; transition: transform 0.1s, background 0.2s; }
         button:active { transform: scale(0.94); filter: brightness(1.2); }
@@ -199,7 +217,7 @@
         const bill = parseFloat(document.getElementById('bill').value) || 0;
         const perPerson = (bill / splitCount).toFixed(2);
         document.getElementById('bill').value = perPerson;
-        splitCount = 1; // Reset split to 1 since we are now calculating for 1 share
+        splitCount = 1;
         updateSplit(0);
         vibrate(20);
     }
@@ -258,7 +276,9 @@
         let roundedCents = Math.round(changeCents / 5) * 5;
         const denoms = [5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5];
         const labels = ['€50', '€20', '€10', '€5', '€2', '€1', '50c', '20c', '10c', '5c'];
-        let html = `<div style="font-size:32px; font-weight:800; color:var(--accent)">€${(roundedCents/100).toFixed(2)}</div><div class="coin-list">`;
+        
+        let html = `<div class="total-amount">€${(roundedCents/100).toFixed(2)}</div>`;
+        html += `<div class="coin-list">`;
         let temp = roundedCents;
         for (let i = 0; i < denoms.length; i++) {
             let count = Math.floor(temp / denoms[i]);
@@ -268,7 +288,7 @@
                 temp -= count * denoms[i];
             }
         }
-        if (!isNaN(target)) html += `</div><div style="margin-top:15px; font-size:14px; color:#ffd166; font-weight:bold;">Fooi: €${(tipCents/100).toFixed(2)}</div>`;
+        if (!isNaN(target)) html += `</div><div style="margin-top:20px; font-size:18px; color:#ffd166; font-weight:bold;">Fooi: €${(tipCents/100).toFixed(2)}</div>`;
         else html += `</div>`;
         resDiv.innerHTML = html; resDiv.classList.add('show');
     }
@@ -285,3 +305,4 @@
 </script>
 </body>
 </html>
+
