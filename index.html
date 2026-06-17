@@ -66,10 +66,14 @@
         .quick-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
         .quick-grid button { background: var(--btn-gray); color: #fff; padding: 12px; font-size: 15px; font-weight: 700; border-radius: 10px; border: 1px solid #3d3d3d; }
         
-        /* VOORRAAD BALK */
-        .inventory-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 10px; }
-        .inv-chip { padding: 6px 10px; font-size: 10px; border-radius: 6px; background: #333; color: #888; border: 1px solid transparent; cursor: pointer; }
-        .inv-chip.active { background: var(--accent); color: #000; font-weight: bold; }
+        /* EXACTE VOORRAAD LIJST */
+        .stock-container { background: var(--input-bg); padding: 12px; border-radius: 14px; margin-bottom: 15px; }
+        .stock-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #2a2a2a; }
+        .stock-item:last-child { border-bottom: none; }
+        .stock-label { font-size: 14px; font-weight: bold; }
+        .stock-controls { display: flex; align-items: center; gap: 10px; }
+        .stock-btn { background: var(--btn-gray); color: white; border-radius: 6px; width: 28px; height: 28px; font-size: 16px; font-weight: bold; }
+        .stock-count { font-size: 16px; font-weight: bold; width: 30px; text-align: center; color: var(--accent); }
 
         .btn-main { background: var(--accent); color: #000; width: 100%; padding: 18px; font-weight: 800; border-radius: 16px; font-size: 18px; text-transform: uppercase; }
 
@@ -146,8 +150,8 @@
     <span class="label">Afronden naar?</span>
     <input type="number" id="target" placeholder="bv. 50,00" inputmode="decimal" style="margin-bottom:15px" oninput="autoSave()">
 
-    <span class="label">Munt Voorraad (Tik om 'OP' te zetten)</span>
-    <div class="inventory-row" id="inventory"></div>
+    <span class="label">Aantal Munten in Portemonnee</span>
+    <div class="stock-container" id="stock-list"></div>
 
     <button class="btn-main" onclick="calculate()">Bereken</button>
     <div id="result" class="result"></div>
@@ -157,25 +161,42 @@
     let runningTimers = [];
     let currentTable = "";
     let splitCount = 1;
-    let activeOrders = JSON.parse(localStorage.getItem('active_orders_v8') || '{}');
-    let quickBills = JSON.parse(localStorage.getItem('quick_bills_v8') || '[]');
+    let activeOrders = JSON.parse(localStorage.getItem('active_orders_v9') || '{}');
+    let quickBills = JSON.parse(localStorage.getItem('quick_bills_v9') || '[]');
     
-    // MUNTVOORRAAD LOGICA
-    let coinStock = JSON.parse(localStorage.getItem('coin_stock') || '{"5000":true,"2000":true,"1000":true,"500":true,"200":true,"100":true,"50":true,"20":true,"10":true,"5":true}');
+    // STANDAARD VOORRAAD (Briefjes staan op 99 = oneindig voor het gemak, munten kun je zelf instellen)
+    let coinStock = JSON.parse(localStorage.getItem('coin_quantities') || '{"5000":99,"2000":99,"1000":99,"500":99,"200":5,"100":5,"50":10,"20":10,"10":10,"5":5}');
+    
     const denoms = [5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5];
     const labels = ['50€', '20€', '10€', '5€', '2€', '1€', '50c', '20c', '10c', '5c'];
     const fullLabels = ['50 euro', '20 euro', '10 euro', '5 euro', '2 euro', '1 euro', '50 cent', '20 cent', '10 cent', '5 cent'];
 
-    function renderInventory() {
-        const cont = document.getElementById('inventory');
+    function renderStockList() {
+        const cont = document.getElementById('stock-list');
         cont.innerHTML = "";
+        // We laten alleen briefgeld van 5€ en alle munten zien om het scherm overzichtelijk te houden
         denoms.forEach((d, i) => {
-            const chip = document.createElement('div');
-            chip.className = `inv-chip ${coinStock[d] ? 'active' : ''}`;
-            chip.innerText = labels[i];
-            chip.onclick = () => { coinStock[d] = !coinStock[d]; localStorage.setItem('coin_stock', JSON.stringify(coinStock)); renderInventory(); vibrate(10); };
-            cont.appendChild(chip);
+            if (d <= 500) { 
+                const item = document.createElement('div');
+                item.className = "stock-item";
+                item.innerHTML = `
+                    <span class="stock-label">${labels[i]}</span>
+                    <div class="stock-controls">
+                        <button class="stock-btn" onclick="changeStock(${d}, -1)">-</button>
+                        <span class="stock-count" id="stock-count-${d}">${coinStock[d]}</span>
+                        <button class="stock-btn" onclick="changeStock(${d}, 1)">+</button>
+                    </div>
+                `;
+                cont.appendChild(item);
+            }
         });
+    }
+
+    function changeStock(d, val) {
+        coinStock[d] = Math.max(0, coinStock[d] + val);
+        localStorage.setItem('coin_quantities', JSON.stringify(coinStock));
+        document.getElementById(`stock-count-${d}`).innerText = coinStock[d];
+        vibrate(10);
     }
 
     function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); if(id === 'screen-home') renderActiveTables(); }
@@ -216,15 +237,15 @@
     }
     function updateSplit(v) { splitCount = Math.max(1, splitCount + v); document.getElementById('num-people').innerText = splitCount + "p"; document.getElementById('per-person-display').innerText = "€ " + ((parseFloat(document.getElementById('bill').value)||0)/splitCount).toFixed(2); autoSave(); }
     function useSplitAmount() { document.getElementById('bill').value = ((parseFloat(document.getElementById('bill').value)||0)/splitCount).toFixed(2); splitCount = 1; updateSplit(0); }
-    function autoSave() { const b = document.getElementById('bill').value, t = document.getElementById('target').value; if(b || t) activeOrders[currentTable] = {bill:b, target:t, split:splitCount}; else delete activeOrders[currentTable]; localStorage.setItem('active_orders_v8', JSON.stringify(activeOrders)); }
-    function handleBack() { if(confirm("Tafel verwijderen?")) { delete activeOrders[currentTable]; localStorage.setItem('active_orders_v8', JSON.stringify(activeOrders)); } showScreen('screen-home'); }
-    function saveQuickBill() { const v = document.getElementById('bill').value; if(v && !quickBills.includes(v)) { quickBills.push(parseFloat(v).toFixed(2)); localStorage.setItem('quick_bills_v8', JSON.stringify(quickBills)); renderQuick(); vibrate(30); } }
+    function autoSave() { const b = document.getElementById('bill').value, t = document.getElementById('target').value; if(b || t) activeOrders[currentTable] = {bill:b, target:t, split:splitCount}; else delete activeOrders[currentTable]; localStorage.setItem('active_orders_v9', JSON.stringify(activeOrders)); }
+    function handleBack() { if(confirm("Tafel verwijderen?")) { delete activeOrders[currentTable]; localStorage.setItem('active_orders_v9', JSON.stringify(activeOrders)); } showScreen('screen-home'); }
+    function saveQuickBill() { const v = document.getElementById('bill').value; if(v && !quickBills.includes(v)) { quickBills.push(parseFloat(v).toFixed(2)); localStorage.setItem('quick_bills_v9', JSON.stringify(quickBills)); renderQuick(); vibrate(30); } }
     function renderQuick() {
         const cont = document.getElementById('savedBills'); cont.innerHTML = '';
         quickBills.forEach((amt, i) => {
             const c = document.createElement('div'); c.style.background="#333"; c.style.padding="6px 10px"; c.style.borderRadius="8px"; c.style.fontSize="12px";
             c.innerText = '€' + amt; c.onclick = () => { document.getElementById('bill').value = amt; updateSplit(0); vibrate(10); };
-            c.oncontextmenu = (e) => { e.preventDefault(); if(confirm('Wissen?')) { quickBills.splice(i,1); localStorage.setItem('quick_bills_v8', JSON.stringify(quickBills)); renderQuick(); } };
+            c.oncontextmenu = (e) => { e.preventDefault(); if(confirm('Wissen?')) { quickBills.splice(i,1); localStorage.setItem('quick_bills_v9', JSON.stringify(quickBills)); renderQuick(); } };
             cont.appendChild(c);
         });
     }
@@ -234,23 +255,40 @@
         const resDiv = document.getElementById('result');
         if (paid < bill && isNaN(target)) { vibrate([50,50]); return; }
         vibrate(20);
+        
         let diff = !isNaN(target) ? Math.round((paid - target) * 100) : Math.round((paid - bill) * 100);
         let rounded = Math.round(diff / 5) * 5;
         let html = `<div style="font-size:32px; font-weight:800; color:var(--accent)">€${(rounded/100).toFixed(2)}</div><div class="coin-list">`;
+        
+        // Maak een tijdelijke kopie van de voorraad om mee te rekenen
+        let virtualStock = {...coinStock};
         let temp = rounded;
+
         for (let i = 0; i < denoms.length; i++) {
             const d = denoms[i];
-            if (coinStock[d]) { // CHECK OF MUNT OP VOORRAAD IS
-                let count = Math.floor(temp / d);
-                if (count > 0) {
+            let requiredCount = Math.floor(temp / d);
+            
+            if (requiredCount > 0) {
+                // Kijk hoeveel we er écht van hebben liggen
+                let actualUsed = Math.min(requiredCount, virtualStock[d]);
+                
+                if (actualUsed > 0) {
                     let cl = d >= 500 ? 'silver' : (d >= 100 ? 'gold' : 'bronze');
-                    html += `<div class="coin-item"><span class="dot ${cl}"></span><b>${count}x</b>&nbsp;${fullLabels[i]}</div>`;
-                    temp -= count * d;
+                    html += `<div class="coin-item"><span class="dot ${cl}"></span><b>${actualUsed}x</b>&nbsp;${fullLabels[i]}</div>`;
+                    temp -= actualUsed * d;
+                    virtualStock[d] -= actualUsed; // Trek ze virtueel af
                 }
             }
         }
+
+        // Als er na de berekening nog restbedrag is omdat de grote munten op waren
+        if (temp > 0) {
+            html += `<div style="color:var(--danger); font-size:12px; margin-top:10px; width:100%;">⚠️ Let op: Te weinig kleine munten in voorraad voor exacte match!</div>`;
+        }
+
         if(!isNaN(target)) html += `</div><div style="margin-top:15px; font-size:14px; color:#ffd166; font-weight:bold;">Fooi: €${((target-bill)).toFixed(2)}</div>`;
         else html += "</div>";
+        
         resDiv.innerHTML = html; resDiv.className = "result show";
     }
 
@@ -259,8 +297,7 @@
         b.onclick = () => { vibrate(10); document.getElementById('paid').value = v.toFixed(2); calculate(); };
         document.getElementById('quickButtons').appendChild(b);
     });
-    renderQuick(); renderInventory();
+    renderQuick(); renderStockList();
 </script>
 </body>
 </html>
-
